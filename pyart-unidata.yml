@@ -20,6 +20,7 @@ dependencies:
   - wradlib
   - cartopy
   - siphon
+  - boto
   - boto3
   - botocore
   - metpy
