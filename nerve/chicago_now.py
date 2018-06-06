@@ -300,7 +300,7 @@ def get_obs(ts, mybb):
 def plot_the_ppi(radar, ex, have_obs, sfc_data,
                  d, rname, gatefilter=None, moment='reflectivity', vmin=-8,
                  vmax=64, cmap=pyart.graph.cm_colorblind.HomeyerRainbow, sweep=0,
-                 form='.png', dirr='./'):
+                 form='.png', dirr='./', latest=False):
     mybb = {'north': ex[3], 'south': ex[2], 'east': ex[0], 'west': ex[1]}
     myf = plt.figure(figsize=[20, 18])
     proj = ccrs.PlateCarree()
@@ -358,6 +358,8 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
 
     ax.set_aspect(1.1)
     plt.savefig(dirr + rname + '_' + d + '_' + moment + form)
+    if latest:
+        plt.savefig(dirr+'/'+rname+'_latest'+form)
 
 
 if __name__ == "__main__":
