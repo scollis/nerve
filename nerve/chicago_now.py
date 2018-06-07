@@ -302,7 +302,7 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
                  vmax=64, cmap=pyart.graph.cm_colorblind.HomeyerRainbow, sweep=0,
                  form='.png', dirr='./', latest=False):
     mybb = {'north': ex[3], 'south': ex[2], 'east': ex[0], 'west': ex[1]}
-    myf = plt.figure(figsize=[20, 18])
+    myf = plt.figure(figsize=[15, 11])
     proj = ccrs.PlateCarree()
     mydisplay = pyart.graph.RadarMapDisplayCartopy(radar)
     mydisplay.plot_ppi_map(moment, sweep=sweep,
@@ -378,4 +378,5 @@ if __name__ == "__main__":
     mybb = {'north': ex[3], 'south': ex[2], 'east': ex[0], 'west': ex[1]}
     sfc_data, have_obs = get_obs(ts, mybb)
     plot_the_ppi(radar, ex, True, sfc_data,
-                 d, rname, dirr=odir, latest=True)
+                 d, rname, dirr=odir, latest=True,
+                 form='.jpg')
