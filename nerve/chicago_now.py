@@ -252,7 +252,7 @@ def get_obs(ts, mybb):
     ncss_url = dataset.access_urls["NetcdfSubset"]
     ncss = NCSS(ncss_url)
 
-    query = ncss.query().accept('csv').time(ts - datetime.timedelta(minutes=5))
+    query = ncss.query().accept('csv').time(ts - datetime.timedelta(minutes=1))
     query.lonlat_box(**mybb)
     query.variables('air_temperature', 'dew_point_temperature', 'inches_ALTIM',
                     'wind_speed', 'wind_from_direction', 'cloud_area_fraction', 'weather')
@@ -296,13 +296,33 @@ def get_obs(ts, mybb):
 
     return sfc_data, have_obs
 
+def argonne_df():
+    argonne_lat = 41.7183
+    argonne_lon = -87.9786
+    nw_lat = 42.055984
+    nw_lon = -87.675171
+    hp_lat = 42.190166
+    hp_lon = -87.786697
+    my_df = pd.DataFrame({'SiteName': ['Argonne', 'Northwestern',
+                                       'Highland Park'],
+                          'Latitude': np.array([argonne_lat, nw_lat, hp_lat]),
+                          'Longitude': np.array([argonne_lon, nw_lon, hp_lon])})
+    return my_df
+
+
+def pyart_df():
+    my_df = pd.DataFrame({'SiteName': ['Made with Py-ART',
+                                       'https://github.com/ARM-DOE/pyart'],
+                         'Latitude': np.array([40.6, 40.55]),
+                          "Longitude": np.array([-87.7, -87.9])})
+    return my_df
 
 def plot_the_ppi(radar, ex, have_obs, sfc_data,
                  d, rname, gatefilter=None, moment='reflectivity', vmin=-8,
                  vmax=64, cmap=pyart.graph.cm_colorblind.HomeyerRainbow, sweep=0,
                  form='.png', dirr='./', latest=False):
     mybb = {'north': ex[3], 'south': ex[2], 'east': ex[0], 'west': ex[1]}
-    myf = plt.figure(figsize=[15, 11])
+    _ = plt.figure(figsize=[15, 11])
     proj = ccrs.PlateCarree()
     mydisplay = pyart.graph.RadarMapDisplayCartopy(radar)
     mydisplay.plot_ppi_map(moment, sweep=sweep,
@@ -318,9 +338,9 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
     ax.set_extent(ex)
 
     lat_lines = np.arange(np.around(ex[2], decimals=1),
-                          ex[3], .2)
+                          ex[3]+.4, .4)
     lon_lines = np.arange(np.around(ex[0], decimals=1),
-                          ex[1], .5)
+                          ex[1]+.5, .5)
 
     # Create a feature for States/Admin 1 regions at 1:50m from Natural Earth
     states_provinces = cfeature.NaturalEarthFeature(
@@ -335,8 +355,8 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
     if True:  # len(request.imgs) > 0:
         ax.add_image(request, 10, zorder=0)
 
-    plt.xticks(fontsize=25)
-    plt.yticks(fontsize=25)
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
 
     ax.set_xticks(lon_lines, crs=ccrs.PlateCarree())
     ax.set_yticks(lat_lines, crs=ccrs.PlateCarree())
@@ -344,11 +364,11 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
     lat_formatter = LatitudeFormatter()
     ax.xaxis.set_major_formatter(lon_formatter)
     ax.yaxis.set_major_formatter(lat_formatter)
-    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False,
+    _ = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False,
                       linewidth=2, color='gray', alpha=0.5, linestyle='--',
                       xlocs=lon_lines, ylocs=lat_lines)
 
-    scale_bar_left(plt.gca(), linewidth=12, fs=25, col='Black', length=50)
+    scale_bar_left(plt.gca(), linewidth=10, fs=15, col='Black', length=40)
 
     if have_obs:
         stationplot = StationPlot(ax, sfc_data['longitude'], sfc_data['latitude'],
@@ -356,10 +376,20 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
                                   fontsize=12)
         simple_layout.plot(stationplot, sfc_data)
 
+    sites = argonne_df()
+    plot_points_from_df(sites, sym='k*')
+    plot_text(sites, dx=0.02, dy=-0.02, tcol='k', fontsize=15)
+    plot_text(pyart_df(), tcol='k', fontsize=10)
+
+    mydisplay.cbs[0].ax.tick_params(labelsize=15)
+    nice_string = radar.fields[moment]['standard_name'].replace('_', ' ')
+    unts = ' (' + radar.fields[moment]['units'] + ')'
+    mydisplay.cbs[0].set_label(label=nice_string+unts, fontsize=15)
+
     ax.set_aspect(1.1)
     plt.savefig(dirr + rname + '_' + d + '_' + moment + form)
     if latest:
-        plt.savefig(dirr+'/'+rname+'_latest'+form)
+        plt.savefig(dirr+'/'+rname+'_'+moment+'_latest'+form)
 
 
 if __name__ == "__main__":
@@ -380,3 +410,8 @@ if __name__ == "__main__":
     plot_the_ppi(radar, ex, True, sfc_data,
                  d, rname, dirr=odir, latest=True,
                  form='.jpg')
+
+    plot_the_ppi(radar, ex, True, sfc_data,
+                 d, rname, dirr=odir, latest=True,
+                 form='.jpg', moment='differential_reflectivity',
+                 vmin=-0.5, vmax=4)
