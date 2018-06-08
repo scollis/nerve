@@ -27,6 +27,8 @@ from copy import deepcopy
 
 import sys
 
+from pathlib import Path
+
 import pyart
 
 
@@ -206,7 +208,7 @@ wx_code_map = {'': 0, 'DU': 7, 'BLDU': 7, 'HZ': 5, 'BR': 10, '-UP': 16, 'UP': 16
                'DRSN': 36, 'FG': 45, 'FZFG': 49, '-DZ': 51, 'DZ': 53, '+DZ': 55,
                '-RA': 61, 'RA': 63, '+RA': 65, '-FZRA': 66,
                '-SN': 71, 'SN': 73, '+SN': 75, '-SHRA': 80, 'SHRA': 81, '-SHSN': 85, '+TSRA': 97,
-               'TSRA': 95, '-TSRA': 95}
+               'TSRA': 95, '-TSRA': 95, 'VCTSRA': 95}
 
 
 def to_code(text):
@@ -321,8 +323,9 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
                  d, rname, gatefilter=None, moment='reflectivity', vmin=-8,
                  vmax=64, cmap=pyart.graph.cm_colorblind.HomeyerRainbow, sweep=0,
                  form='.png', dirr='./', latest=False):
+    homes = str(Path.home())
     mybb = {'north': ex[3], 'south': ex[2], 'east': ex[0], 'west': ex[1]}
-    _ = plt.figure(figsize=[15, 11])
+    figme = plt.figure(figsize=[15, 11])
     proj = ccrs.PlateCarree()
     mydisplay = pyart.graph.RadarMapDisplayCartopy(radar)
     mydisplay.plot_ppi_map(moment, sweep=sweep,
@@ -386,6 +389,10 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
     unts = ' (' + radar.fields[moment]['units'] + ')'
     mydisplay.cbs[0].set_label(label=nice_string+unts, fontsize=15)
 
+    logo = plt.imread(homes + '/unfunded_projects/nerve/nerve/argonne_logo.png')
+    #ax.figure.figimage(logo, -89, 42.7, alpha=.15, zorder=1)
+    figme.figimage(logo, 650,20)
+
     ax.set_aspect(1.1)
     plt.savefig(dirr + rname + '_' + d + '_' + moment + form)
     if latest:
@@ -393,6 +400,7 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
 
 
 if __name__ == "__main__":
+
     odir = sys.argv[1]
     config = Config(connect_timeout=500, retries={'max_attempts': 10})
 
