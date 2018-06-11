@@ -419,7 +419,7 @@ if __name__ == "__main__":
                  d, rname, dirr=odir, latest=True,
                  form='.jpg')
 
-    plot_the_ppi(radar, ex, True, sfc_data,
+    plot_the_ppi(radar, ex, have_obs, sfc_data,
                  d, rname, dirr=odir, latest=True,
                  form='.jpg', moment='differential_reflectivity',
                  vmin=-0.5, vmax=4)
