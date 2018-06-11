@@ -258,9 +258,9 @@ def get_obs(ts, mybb):
     query.lonlat_box(**mybb)
     query.variables('air_temperature', 'dew_point_temperature', 'inches_ALTIM',
                     'wind_speed', 'wind_from_direction', 'cloud_area_fraction', 'weather')
-    data = ncss.get_data(query)
 
     try:
+        data = ncss.get_data(query)
         lats = data['latitude'][:]
         lons = data['longitude'][:]
         tair = data['air_temperature'][:]
