@@ -292,7 +292,7 @@ def get_obs(ts, mybb):
                     'air_pressure_at_sea_level': slp, 'present_weather': wx_codes}
 
         have_obs = True
-    except IndexError:
+    except:
         have_obs = False
         sfc_data = {}
 
