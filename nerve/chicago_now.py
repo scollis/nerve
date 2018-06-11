@@ -415,7 +415,7 @@ if __name__ == "__main__":
     ex = [-89., -87., 40.5, 42.7]
     mybb = {'north': ex[3], 'south': ex[2], 'east': ex[0], 'west': ex[1]}
     sfc_data, have_obs = get_obs(ts, mybb)
-    plot_the_ppi(radar, ex, True, sfc_data,
+    plot_the_ppi(radar, ex, have_obs, sfc_data,
                  d, rname, dirr=odir, latest=True,
                  form='.jpg')
 
