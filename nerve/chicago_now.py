@@ -391,7 +391,7 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
 
     logo = plt.imread(homes + '/unfunded_projects/nerve/nerve/argonne_logo.png')
     #ax.figure.figimage(logo, -89, 42.7, alpha=.15, zorder=1)
-    figme.figimage(logo, 650,20)
+    figme.figimage(logo, 500,700)
 
     ax.set_aspect(1.1)
     #plt.tight_layout()
