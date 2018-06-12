@@ -395,9 +395,9 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
 
     ax.set_aspect(1.1)
     #plt.tight_layout()
-    plt.savefig(dirr + rname + '_' + d + '_' + moment + form)
+    plt.savefig(dirr + rname + '_' + d + '_' + moment + form, bbox_inches='tight')
     if latest:
-        plt.savefig(dirr+'/'+rname+'_'+moment+'_latest'+form)
+        plt.savefig(dirr+'/'+rname+'_'+moment+'_latest'+form, bbox_inches='tight')
 
 
 if __name__ == "__main__":
