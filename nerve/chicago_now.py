@@ -394,6 +394,7 @@ def plot_the_ppi(radar, ex, have_obs, sfc_data,
     figme.figimage(logo, 650,20)
 
     ax.set_aspect(1.1)
+    plt.tight_layout()
     plt.savefig(dirr + rname + '_' + d + '_' + moment + form)
     if latest:
         plt.savefig(dirr+'/'+rname+'_'+moment+'_latest'+form)
